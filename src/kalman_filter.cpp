@@ -24,14 +24,28 @@ void KalmanFilter::Predict() {
   /**
   TODO:
     * predict the state
+    * use x_k-1|k-1 and state transition equation to compute x_k|k-1
   */
+  x_ = F_ * x_;
+  MatrixXd F_t = F_.transpose();
+  P_ = F_ * P_ * F_t + Q_;
+  std::cout << "x_ =" << std::endl << x_ << std::endl;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
   /**
   TODO:
     * update the state by using Kalman Filter equations
+    * z is the true measurement
   */
+
+  MatrixXd z_pred = H_ * x_;
+  MatrixXd S_ = H_ * P_ * H_.transpose()+R_;
+  MatrixXd K_ = P_ * H_.transpose() * S_.inverse();
+
+  //estimate
+  x_ = x_ + K_ * (z - z_pred);
+  P_ = P_ - K_ * (H_ * P_ * H_.transpose() + R_) * K_.transpose();
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
@@ -40,3 +54,20 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     * update the state by using Extended Kalman Filter equations
   */
 }
+
+
+int main(int argc, char* argv[]) {
+  KalmanFilter KF;
+  VectorXd a(2);
+  a << 1, 2;
+  MatrixXd b(2,2);
+  b << 2, 3,
+       1, 4;
+  KF.Init(a,b,b,b,b,b);
+  KF.Predict();
+  
+  printf("yes\n");
+  return 0;
+}
+
+
