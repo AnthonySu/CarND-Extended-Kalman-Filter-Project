@@ -29,7 +29,6 @@ void KalmanFilter::Predict() {
   x_ = F_ * x_;
   MatrixXd F_t = F_.transpose();
   P_ = F_ * P_ * F_t + Q_;
-  std::cout << "x_ =" << std::endl << x_ << std::endl;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
