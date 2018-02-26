@@ -130,8 +130,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   ekf_.F_(1, 3) = dt;
 
   // set measurement noises
-  noise_ax = 9;
-  noise_ay = 9;
+  float noise_ax = 9;
+  float noise_ay = 9;
 
   //set the process covariance matrix Q (Q = X * a * X_T)
   ekf_.Q_ = MatrixXd(4, 4);
@@ -154,8 +154,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
-    H_jacobian = tools.CalculateJacobian(ekf_.x_);
-    ekf_.H_ = H_jacobian;
+    Hj_ = tools.CalculateJacobian(ekf_.x_);
+    ekf_.H_ = Hj_;
     ekf_.R_ = R_radar_;
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 
